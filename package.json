@@ -1,0 +1,13 @@
+{
+  "name": "takefile",
+  "packageManager": "yarn@3.2.0",
+  "dependencies": {
+    "ajv": "^8.10.0",
+    "fastify": "^3.27.4",
+    "fastify-multipart": "^5.3.1",
+    "fastify-static": "^4.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  }
+}
