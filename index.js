@@ -49,10 +49,25 @@ fastify.post("/", async function (req, reply) {
   const target = path.join("/tmp/takefile", path.basename(data.filename));
   fs.mkdirSync("/tmp/takefile", { recursive: true });
   console.log("Receiving %s to %s", data.filename, target);
-  await pump(data.file, fs.createWriteStream(target));
+  await pump(logProgress(data.file), fs.createWriteStream(target));
 
   reply.send("done!");
 });
+
+async function* logProgress(stream) {
+  let total = 0;
+  let lastTime = 0;
+  const log = () => console.log(`Received: ${(total / 1000000).toFixed(2)} MB`);
+  for await (const buffer of stream) {
+    if (Date.now() - lastTime > 1000) {
+      log();
+      lastTime = Date.now();
+    }
+    yield buffer;
+    total += buffer.length;
+  }
+  log();
+}
 
 fastify.listen(3099, "100.89.240.124", (err) => {
   if (err) throw err;
